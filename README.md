@@ -1,6 +1,7 @@
 # Dango
 
 This is your story.
+Hello World!
 
 ## Run in development mode
 
