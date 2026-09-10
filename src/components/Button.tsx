@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent, PropsWithChildren, ReactElement } from 'react';
+import type { FC, MouseEvent, PropsWithChildren, ReactElement } from 'react';
 
 type Props = Readonly<{
   disabled?: boolean;
@@ -10,15 +10,10 @@ export const Button: FC<PropsWithChildren<Props>> = ({
   disabled,
   className,
   onClick,
-  children
+  children,
 }): ReactElement => {
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      className={className}
-      onClick={onClick}
-    >
+    <button type="button" disabled={disabled} className={className} onClick={onClick}>
       {children}
     </button>
   );

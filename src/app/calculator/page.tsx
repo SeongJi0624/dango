@@ -1,28 +1,18 @@
-import { promises } from 'fs';
-import { GetStaticProps, NextPage } from 'next';
-import { join } from 'path';
-import React, { ReactElement, useEffect, useState } from 'react';
-import { Button } from '../components/Button';
+'use client';
 
-type Props = Readonly<{
-  countries: Array<Country>;
-}>;
+import React, { type ReactElement, useState } from 'react';
+import { Button } from '../../components/Button';
 
 // 現在選択されている演算子。何も選択されていない場合は null
 type Operator = '+' | '-' | null;
 
 // 数字ボタン(7〜9, 4〜6, 1〜3)を配列化し、JSXの重複を避ける
-const DIGIT_BUTTONS: ReadonlyArray<string> = [
-  '7', '8', '9',
-  '4', '5', '6',
-  '1', '2', '3',
-];
+const DIGIT_BUTTONS: ReadonlyArray<string> = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
 
 // 全ボタン共通のスタイル
-const buttonClassName =
-  'py-2 bg-gray-800 text-white rounded border border-gray-200 cursor-pointer';
+const buttonClassName = 'py-2 bg-gray-800 text-white rounded border border-gray-200 cursor-pointer';
 
-const IndexPage: NextPage<Props> = ({ countries }: Props): ReactElement => {
+const CalculatorPage = (): ReactElement => {
   // 画面に表示中の値(文字列で保持し、入力途中の小数点なども扱えるようにする)
   const [display, setDisplay] = useState<string>('0');
   // 演算子が押される前に確定していた値
@@ -32,7 +22,6 @@ const IndexPage: NextPage<Props> = ({ countries }: Props): ReactElement => {
   // true の間は次の数字入力で表示をリセットして新しく打ち始める
   // (演算子や = を押した直後は、実物の電卓と同様にそれまでの値を表示し続ける)
   const [waitingForOperand, setWaitingForOperand] = useState<boolean>(false);
-
 
   // 数字ボタン押下時の処理
   // waitingForOperand が true の場合(演算子や = の直後)は表示を新しい数字で置き換え、
@@ -108,7 +97,6 @@ const IndexPage: NextPage<Props> = ({ countries }: Props): ReactElement => {
 
   return (
     <div className="m-10 p-4 w-2/3 mx-auto shadow-lg border-2 rounded-2xl">
-
       <div className="mx-auto">
         {/* 計算結果・入力中の値を表示するディスプレイ部分 */}
         <div className="p-3 mb-3 border-2 rounded h-full w-full text-right">
@@ -148,17 +136,5 @@ const IndexPage: NextPage<Props> = ({ countries }: Props): ReactElement => {
   );
 };
 
-// ビルド時に国データ(JSON)を読み込み、propsとしてページに渡す
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const buffer = await promises.readFile(join(process.cwd(), 'json', 'countries.json'));
-  const str = buffer.toString();
-
-  return {
-    props: {
-      countries: JSON.parse(str) as Array<Country>,
-    },
-  };
-};
-
 // eslint-disable-next-line import/no-default-export
-export default IndexPage;
+export default CalculatorPage;

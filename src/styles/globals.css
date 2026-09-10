@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Tailwind v4はborder-*に色指定が無いと文字色(黒っぽい色)を継承する仕様に変わったため、v3までのデフォルト(薄いグレー)に戻す */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
