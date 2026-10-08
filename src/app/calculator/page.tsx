@@ -69,11 +69,9 @@ const CalculatorPage = (): ReactElement => {
     // if (waitingForOperand) {
     //   setDisplay('0.');
     //   setWaitingForOperand(false);
-
     //   return;
     // }
-
-    setDisplay((prev: string) => (prev.includes('.') ? prev : prev + '.'));
+    // setDisplay((prev: string) => (prev.includes('.') ? prev : prev + '.'));
   };
 
   // Cボタン押下時の処理。表示・保持値・演算子をすべて初期状態に戻す
