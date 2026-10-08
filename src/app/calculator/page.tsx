@@ -66,12 +66,12 @@ const CalculatorPage = (): ReactElement => {
 
   // 小数点ボタン押下時の処理。既に小数点がある場合は無視する
   const inputDecimalPoint = (): void => {
-    if (waitingForOperand) {
-      setDisplay('0.');
-      setWaitingForOperand(false);
+    // if (waitingForOperand) {
+    //   setDisplay('0.');
+    //   setWaitingForOperand(false);
 
-      return;
-    }
+    //   return;
+    // }
 
     setDisplay((prev: string) => (prev.includes('.') ? prev : prev + '.'));
   };
