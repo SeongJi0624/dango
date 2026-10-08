@@ -1,6 +1,6 @@
 'use client';
 
-import React, { type ReactElement, useState } from 'react';
+import React, { type ReactElement, useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 
 // 現在選択されている演算子。何も選択されていない場合は null
@@ -59,10 +59,8 @@ const CalculatorPage = (): ReactElement => {
     if (waitingForOperand) {
       setDisplay(digit);
       setWaitingForOperand(false);
-
       return;
     }
-
     setDisplay((prev: string) => (prev === '0' ? digit : prev + digit));
   };
 
@@ -85,6 +83,22 @@ const CalculatorPage = (): ReactElement => {
     setStoredValue(null);
     setOperator(null);
     setWaitingForOperand(false);
+  };
+
+  // Backspaceボタン押下時の処理。表示の末尾1文字を削除する
+  const deleteLastDigit = (): void => {
+    if (display === 'Error') {
+      clear();
+      return;
+    }
+    // 演算子や = を押した直後は、入力中でないので Backspace は無視する
+    if (waitingForOperand) {
+      return;
+    }
+    setDisplay((prev: string) => {
+      const next = prev.slice(0, -1);
+      return next === '' ? '0' : next;
+    });
   };
 
   // +/- ボタン押下時の処理
@@ -135,6 +149,33 @@ const CalculatorPage = (): ReactElement => {
     setOperator(null);
     setWaitingForOperand(true);
   };
+
+  // キーボード入力に対応するための useEffect
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      const { key } = e;
+
+      if (/^[0-9]$/.test(key)) {
+        inputDigit(key);
+      } else if (key === '.') {
+        inputDecimalPoint();
+      } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+        e.preventDefault(); // Firefoxで演算子がフォーム送信されるのを防ぐ
+        applyOperator(key);
+      } else if (key === 'Enter' || key === '=') {
+        e.preventDefault(); // FirefoxでEnterがフォーム送信されるのを防ぐ
+        calculateResult();
+      } else if (key === 'Backspace') {
+        deleteLastDigit();
+      } else if (key === 'Escape') {
+        clear();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    // クリーンアップ関数を返して、コンポーネントがアンマウントされるときにイベントリスナーを削除する
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
 
   return (
     <div className="m-10 p-4 w-2/3 mx-auto shadow-lg border-2 rounded-2xl">
