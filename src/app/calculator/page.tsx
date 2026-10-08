@@ -33,9 +33,9 @@ const calculate = (a: number, b: number, op: Operator): number => {
     case '*':
       return roundResult(a * b);
     case '/':
-      // return b === 0 ? NaN : roundResult(a / b);
-      // 0で割ったときの処理を一時的に消して、5 / 0 =と0 / 0 =を計算してみよう。それぞれ何が表示されるか確かめよう（NaNの特徴を見返してみよう）
-      return roundResult(a / b);
+      return b === 0 ? NaN : roundResult(a / b);
+    // 0で割ったときの処理を一時的に消して、5 / 0 =と0 / 0 =を計算してみよう。それぞれ何が表示されるか確かめよう（NaNの特徴を見返してみよう）
+    // return roundResult(a / b);
     default:
       return b;
   }
