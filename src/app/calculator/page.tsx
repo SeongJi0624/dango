@@ -66,6 +66,8 @@ const CalculatorPage = (): ReactElement => {
   const [waitingForOperand, setWaitingForOperand] = useState<boolean>(false);
   // 計算履歴(例: "1 + 2 = 3")。新しいものが先頭に来る
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  // = を押すまでに入力した式(例: "1 + 2 + ")。履歴表示用
+  const [expression, setExpression] = useState<string>('');
 
   // 数字ボタン押下時の処理
   // waitingForOperand が true の場合(演算子や = の直後)は表示を新しい数字で置き換え、
@@ -98,6 +100,7 @@ const CalculatorPage = (): ReactElement => {
     setStoredValue(null);
     setOperator(null);
     setWaitingForOperand(false);
+    setExpression('');
   };
 
   // Backspaceボタン押下時の処理。表示の末尾1文字を削除する
@@ -119,23 +122,20 @@ const CalculatorPage = (): ReactElement => {
   // +/- ボタン押下時の処理
   // すでに演算子が選択されていた場合は、先に前回の計算を確定させてから
   // 新しい演算子を保持する
-  const applyOperator = (nextOperator: Operator): void => {
+  const applyOperator = (nextOperator: Exclude<Operator, null>): void => {
     const currentValue = Number(display);
 
     if (storedValue === null) {
-      // 初回の演算子入力: 現在の表示値をそのまま保持する
       setStoredValue(currentValue);
     } else if (operator && !waitingForOperand) {
-      // 2回目以降(まだ数字を打ち直していない場合): 前の演算子で計算してから保持値を更新する
       const result = calculate(storedValue, currentValue, operator);
 
       if (Number.isNaN(result)) {
-        // 0で割った場合はエラー表示にして状態をリセットする
         setDisplay('Error');
         setStoredValue(null);
         setOperator(null);
         setWaitingForOperand(true);
-
+        setExpression(''); // 式もリセット
         return;
       }
 
@@ -143,8 +143,15 @@ const CalculatorPage = (): ReactElement => {
       setDisplay(String(result));
     }
 
-    // 表示はリセットせず、そのまま前の値を見せておく
-    // (次に数字ボタンが押された時点で新しく打ち始める)
+    const symbol = operatorSymbols[nextOperator];
+    if (operator !== null && waitingForOperand) {
+      // 数字を打たずに演算子だけ押し直した場合(例: 1 + → -)は、末尾の記号を差し替える
+      setExpression((prev: string) => `${prev.slice(0, -2)}${symbol} `);
+    } else {
+      // 今の値と演算子を式の末尾に追加する
+      setExpression((prev: string) => `${prev}${currentValue} ${symbol} `);
+    }
+
     setOperator(nextOperator);
     setWaitingForOperand(true);
   };
@@ -162,9 +169,9 @@ const CalculatorPage = (): ReactElement => {
     // // 式と結果を履歴の先頭に追加する
     // const entry = `${storedValue} ${operatorSymbols[operator]} ${currentValue} = ${resultText}`;
     // setHistory((prev: string[]) => [entry, ...prev]);
-    const text = `${storedValue} ${operatorSymbols[operator]} ${currentValue} = ${resultText}`;
-    // 先頭に追加していくので、その時点の件数を id にすれば重複しない
+    const text = `${expression}${currentValue} = ${resultText}`;
     setHistory((prev: HistoryEntry[]) => [{ id: prev.length, text }, ...prev]);
+    setExpression(''); // 次の計算のために空にする
 
     setDisplay(resultText);
     setStoredValue(null);
