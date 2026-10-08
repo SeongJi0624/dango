@@ -33,7 +33,9 @@ const calculate = (a: number, b: number, op: Operator): number => {
     case '*':
       return roundResult(a * b);
     case '/':
-      return b === 0 ? NaN : roundResult(a / b);
+      // return b === 0 ? NaN : roundResult(a / b);
+      // 0で割ったときの処理を一時的に消して、5 / 0 =と0 / 0 =を計算してみよう。それぞれ何が表示されるか確かめよう（NaNの特徴を見返してみよう）
+      return roundResult(a / b);
     default:
       return b;
   }
@@ -71,11 +73,10 @@ const CalculatorPage = (): ReactElement => {
       setWaitingForOperand(false);
       return;
     }
-    // setDisplay((prev: string) => (prev.includes('.') ? prev : prev + '.'));
+    setDisplay((prev: string) => (prev.includes('.') ? prev : prev + '.'));
     //小数点を2個以上入力できないようにしているifを一時的に消して、
     //1..2のように入力してから=を押してみよう。何が表示されるか確かめ、Number('1..2')の結果と見比べてみよう
-    // setDisplay((prev: string) => prev + '.');
-    setDisplay(Number('1..2'));
+    // setDisplay(Number('1..2'));
   };
 
   // Cボタン押下時の処理。表示・保持値・演算子をすべて初期状態に戻す
