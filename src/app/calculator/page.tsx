@@ -5,6 +5,11 @@ import { Button } from '../../components/Button';
 
 // 現在選択されている演算子。何も選択されていない場合は null
 type Operator = '+' | '-' | '*' | '/' | null;
+// 履歴1件分のデータ。key に使うための id を持たせる
+type HistoryEntry = {
+  id: number;
+  text: string;
+};
 
 // 数字ボタンのスタイル(濃いグレー)
 const digitButtonClassName =
@@ -41,6 +46,14 @@ const calculate = (a: number, b: number, op: Operator): number => {
   }
 };
 
+// 履歴に表示するための演算子の記号
+const operatorSymbols: Record<Exclude<Operator, null>, string> = {
+  '+': '+',
+  '-': '-',
+  '*': '×',
+  '/': '÷',
+};
+
 const CalculatorPage = (): ReactElement => {
   // 画面に表示中の値(文字列で保持し、入力途中の小数点なども扱えるようにする)
   const [display, setDisplay] = useState<string>('0');
@@ -51,6 +64,8 @@ const CalculatorPage = (): ReactElement => {
   // true の間は次の数字入力で表示をリセットして新しく打ち始める
   // (演算子や = を押した直後は、実物の電卓と同様にそれまでの値を表示し続ける)
   const [waitingForOperand, setWaitingForOperand] = useState<boolean>(false);
+  // 計算履歴(例: "1 + 2 = 3")。新しいものが先頭に来る
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   // 数字ボタン押下時の処理
   // waitingForOperand が true の場合(演算子や = の直後)は表示を新しい数字で置き換え、
@@ -142,9 +157,16 @@ const CalculatorPage = (): ReactElement => {
 
     const currentValue = Number(display);
     const result = calculate(storedValue, currentValue, operator);
+    const resultText = Number.isNaN(result) ? 'Error' : String(result);
 
-    // 0で割った場合(NaN)はエラー表示にする
-    setDisplay(Number.isNaN(result) ? 'Error' : String(result));
+    // // 式と結果を履歴の先頭に追加する
+    // const entry = `${storedValue} ${operatorSymbols[operator]} ${currentValue} = ${resultText}`;
+    // setHistory((prev: string[]) => [entry, ...prev]);
+    const text = `${storedValue} ${operatorSymbols[operator]} ${currentValue} = ${resultText}`;
+    // 先頭に追加していくので、その時点の件数を id にすれば重複しない
+    setHistory((prev: HistoryEntry[]) => [{ id: prev.length, text }, ...prev]);
+
+    setDisplay(resultText);
     setStoredValue(null);
     setOperator(null);
     setWaitingForOperand(true);
@@ -247,6 +269,29 @@ const CalculatorPage = (): ReactElement => {
             <span className="select-none text-xl">=</span>
           </Button>
         </div>
+
+        {/* 計算履歴 */}
+        {history.length > 0 && (
+          <div className="mt-4 border-t pt-3">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-500 text-sm">履歴</span>
+              <button
+                type="button"
+                className="text-sm text-gray-500 underline cursor-pointer"
+                onClick={() => setHistory([])}
+              >
+                履歴を消す
+              </button>
+            </div>
+            <ul className="max-h-40 overflow-y-auto text-right">
+              {history.map((entry: HistoryEntry) => (
+                <li key={entry.id} className="text-gray-700 py-1">
+                  {entry.text}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
