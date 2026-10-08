@@ -66,12 +66,15 @@ const CalculatorPage = (): ReactElement => {
 
   // 小数点ボタン押下時の処理。既に小数点がある場合は無視する
   const inputDecimalPoint = (): void => {
-    // if (waitingForOperand) {
-    //   setDisplay('0.');
-    //   setWaitingForOperand(false);
-    //   return;
-    // }
+    if (waitingForOperand) {
+      setDisplay('0.');
+      setWaitingForOperand(false);
+      return;
+    }
     // setDisplay((prev: string) => (prev.includes('.') ? prev : prev + '.'));
+    //小数点を2個以上入力できないようにしているifを一時的に消して、
+    //1..2のように入力してから=を押してみよう。何が表示されるか確かめ、Number('1..2')の結果と見比べてみよう
+    setDisplay((prev: string) => prev + '.');
   };
 
   // Cボタン押下時の処理。表示・保持値・演算子をすべて初期状態に戻す
