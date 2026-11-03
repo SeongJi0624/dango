@@ -3,10 +3,11 @@
 import type { ReactElement } from 'react';
 
 const cellStyle = { width: '150px', display: 'inline-block' } as const;
+const boxStyle = { display: 'flex', background: '#EEFFFF', padding: '8px' };
 
 const LabourPage = (): ReactElement => {
   return (
-    <div style={{ border: 'dotted thin #3399cc' }}>
+    <div style={boxStyle}>
       {/* 1行目 */}
       <div>
         <span style={cellStyle}>勤務開始時間</span>
