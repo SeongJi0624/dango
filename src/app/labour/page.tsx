@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 
 const LabourPage = (): ReactElement => {
   return (
-    <div class="hspan-js1-visual">
+    <div style={{ border: 'dotted thin #3399cc' }}>
       {/* 1行目 */}
       <div>
         <span style={{ width: '150px', display: 'inline-block' }}>勤務開始時間</span>
