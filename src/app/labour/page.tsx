@@ -24,14 +24,13 @@ const LabourPage = (): ReactElement => {
           name="work_end"
           style={{ width: '150px', display: 'inline-block' }}
         ></input>
-        <button type="button">+ 休憩を追加</button>
       </div>
 
       {/* 3行目。休憩時間追加ボタン */}
       <div>
         <span style={{ width: '150px', display: 'inline-block' }}>休憩時間</span>
         <span style={{ width: '150px', display: 'inline-block' }}> </span>
-        <span style={{ width: '150px', display: 'inline-block' }}>勤務時間</span>
+        <button type="button">+ 休憩を追加</button>
       </div>
 
       {/* 4行目。休憩時間入力 */}
