@@ -6,9 +6,9 @@ const LabourPage = (): ReactElement => {
   return (
     <>
       <div>
-        <span>勤務開始時間</span>
-        <span>勤務終了時間</span>
-        <span>勤務時間</span>
+        <span style={{ width: '200px', display: 'inline-block' }}>勤務開始時間</span>
+        <span style={{ width: '200px', display: 'inline-block' }}>勤務終了時間</span>
+        <span style={{ width: '200px', display: 'inline-block' }}>勤務時間</span>
       </div>
       <div>
         <input type="time" name="start"></input>
