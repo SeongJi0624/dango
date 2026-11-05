@@ -23,7 +23,7 @@ const toHourMinutes = (minutes: number): string => {
   return `${h}時間${m}分`;
 };
 
-// 休憩時間が重複する場合、重複を除外する
+// 休憩時間が重複する場合、重複を除外する。
 const duplicateBreakHour = (breakList: Break[]): number => {
   // 入力データを時間順に並び変え
   const ranges = breakList
